@@ -22,6 +22,7 @@ package com.sk89q.worldedit.util;
 import java.util.Locale;
 
 public enum SideEffect {
+    COREPROTECT(State.ON),
     LIGHTING(State.ON),
     NEIGHBORS(State.ON),
     UPDATE(State.ON),

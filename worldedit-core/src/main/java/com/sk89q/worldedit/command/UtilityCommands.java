@@ -61,6 +61,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.formatting.component.SubtleFormat;
 import com.sk89q.worldedit.util.formatting.text.Component;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
@@ -68,6 +69,7 @@ import com.sk89q.worldedit.util.formatting.text.TranslatableComponent;
 import com.sk89q.worldedit.util.formatting.text.format.TextColor;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import org.enginehub.piston.annotation.Command;
 import org.enginehub.piston.annotation.CommandContainer;
 import org.enginehub.piston.annotation.param.Arg;
@@ -454,6 +456,10 @@ public class UtilityCommands {
         BlockVector3 min = base.subtract(radius, radius, radius);
         BlockVector3 max = base.add(radius, radius, radius);
         Region region = new CuboidRegion(world, min, max);
+
+        CuboidRegion cuboidRegion = new CuboidRegion(world, min, max);
+        if (actor != null && actor.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(actor.getName(), editSession, (Region)cuboidRegion, to);
 
         if (from == null) {
             from = new ExistingBlockMask(editSession);

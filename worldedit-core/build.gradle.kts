@@ -14,8 +14,9 @@ plugins {
 repositories {
     maven { url = uri("https://plotsquared.com/mvn") }
     maven { url = uri("https://mvn.intellectualsites.com/content/groups/public/") }
+    maven { url = uri("https://telesphoreo.me/repo/maven") }
+    maven { url = uri("https://hub.spigotmc.org/nexus/content/groups/public") }
     mavenCentral()
-
 }
 
 applyPlatformAndCoreConfiguration()
@@ -32,6 +33,7 @@ dependencies {
     "implementation"("net.java.truevfs:truevfs-profile-default_2.13:0.12.1")
     "implementation"("org.mozilla:rhino-runtime:1.7.12")
     "implementation"("org.yaml:snakeyaml:1.23")
+    "compileOnly"("org.spigotmc:spigot:1.16.2-R0.1-SNAPSHOT")
     "implementation"("com.google.guava:guava:${Versions.GUAVA}")
     "implementation"("com.google.code.findbugs:jsr305:3.0.2")
     "implementation"("com.google.code.gson:gson:${Versions.GSON}")
@@ -57,6 +59,9 @@ dependencies {
         isTransitive = false
     }
     "compile"("com.plotsquared:PlotSquared-Core:5.12.2") {
+        isTransitive = false
+    }
+    "compile"("me.totalfreedom:TotalFreedomMod:2020.11") {
         isTransitive = false
     }
 }

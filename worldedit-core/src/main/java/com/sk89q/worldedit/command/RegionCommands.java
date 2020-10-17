@@ -60,12 +60,14 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import com.sk89q.worldedit.regions.Regions;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.TreeGenerator.TreeType;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import com.sk89q.worldedit.util.formatting.text.TranslatableComponent;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import org.enginehub.piston.annotation.Command;
 import org.enginehub.piston.annotation.CommandContainer;
 import org.enginehub.piston.annotation.param.Arg;
@@ -106,8 +108,14 @@ public class RegionCommands {
     public int set(Actor actor, EditSession editSession,
                    @Selection Region region,
                    @Arg(desc = "The pattern of blocks to set")
-                       Pattern pattern) {
+                       Pattern pattern)
+    {
         int affected = editSession.setBlocks(region, pattern);
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+        {
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, pattern);
+        }
         if (affected != 0) {
             actor.printInfo(TranslatableComponent.of("worldedit.set.done"));
         }
@@ -245,6 +253,11 @@ public class RegionCommands {
         CuboidRegion cuboidregion = (CuboidRegion) region;
         BlockVector3 pos1 = cuboidregion.getPos1();
         BlockVector3 pos2 = cuboidregion.getPos2();
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+        {
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, pattern);
+        }
         int blocksChanged = editSession.drawLine(pattern, pos1, pos2, thickness, !shell);
 
         actor.printInfo(TranslatableComponent.of("worldedit.line.changed", TextComponent.of(blocksChanged)));
@@ -298,6 +311,11 @@ public class RegionCommands {
         if (from == null) {
             from = new ExistingBlockMask(editSession);
         }
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+        {
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(editSession.getPlayer().getName(), editSession, region, to);
+        }
         int affected = editSession.replaceBlocks(region, from, to);
         actor.printInfo(TranslatableComponent.of("worldedit.replace.replaced", TextComponent.of(affected)));
         return affected;
@@ -326,6 +344,8 @@ public class RegionCommands {
     @Logging(REGION)
     @Confirm(Confirm.Processor.REGION)
     public void lay(Player player, EditSession editSession, @Selection Region region, @Arg(name = "pattern", desc = "The pattern of blocks to lay") Pattern patternArg) throws WorldEditException {
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, patternArg);
         BlockVector3 max = region.getMaximumPoint();
         int maxY = max.getBlockY();
         Iterable<BlockVector2> flat = Regions.asFlatRegion(region).asFlatRegion();
@@ -353,6 +373,9 @@ public class RegionCommands {
     public int center(Actor actor, EditSession editSession, @Selection Region region,
                       @Arg(desc = "The pattern of blocks to set")
                           Pattern pattern) throws WorldEditException {
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, pattern);
         int affected = editSession.center(region, pattern);
         actor.printInfo(TranslatableComponent.of("worldedit.center.changed", TextComponent.of(affected)));
         return affected;
@@ -397,6 +420,9 @@ public class RegionCommands {
     public int faces(Actor actor, EditSession editSession, @Selection Region region,
                      @Arg(desc = "The pattern of blocks to set")
                          Pattern pattern) throws WorldEditException {
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, pattern);
         int affected = editSession.makeCuboidFaces(region, pattern);
         actor.printInfo(TranslatableComponent.of("worldedit.faces.changed", TextComponent.of(affected)));
         return affected;
@@ -508,6 +534,10 @@ public class RegionCommands {
         } else {
             combinedMask = mask;
         }
+
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, replace);
 
         int affected = editSession.moveRegion(region, direction, count, copyEntities, copyBiomes, combinedMask, replace);
 
@@ -716,6 +746,10 @@ public class RegionCommands {
                           Mask mask) throws WorldEditException {
         checkCommandArgument(thickness >= 0, "Thickness must be >= 0");
         Mask finalMask = mask == null ? new SolidBlockMask(editSession) : mask;
+
+        Player player = editSession.getPlayer();
+        if (player != null && player.getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+            TotalFreedomMod.getPlugin().fab.logBlockEdits(player.getName(), editSession, region, pattern);
 
         int affected = editSession.hollowOutRegion(region, thickness, pattern, finalMask);
         actor.printInfo(TranslatableComponent.of("worldedit.hollow.changed", TextComponent.of(affected)));

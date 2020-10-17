@@ -115,6 +115,7 @@ import com.sk89q.worldedit.regions.shape.WorldEditExpressionEnvironment;
 import com.sk89q.worldedit.util.Countable;
 import com.sk89q.worldedit.util.Direction;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.SideEffectSet;
 import com.sk89q.worldedit.util.TreeGenerator;
 import com.sk89q.worldedit.util.eventbus.EventBus;
@@ -129,6 +130,7 @@ import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldedit.world.registry.LegacyMapper;
+import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -892,6 +894,8 @@ public class EditSession extends PassthroughExtent implements AutoCloseable {
 
         this.changes++;
         try {
+            if (getPlayer() != null && getPlayer().getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+                TotalFreedomMod.getPlugin().fab.logBlockEdit(getPlayer().getName(), this, block.getBlockType(), position);
             return setBlock(position, block, Stage.BEFORE_REORDER);
         } catch (WorldEditException e) {
             throw new RuntimeException("Unexpected exception", e);
@@ -907,6 +911,8 @@ public class EditSession extends PassthroughExtent implements AutoCloseable {
 
         this.changes++;
         try {
+            if (getPlayer() != null && getPlayer().getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+                TotalFreedomMod.getPlugin().fab.logBlockEdit(getPlayer().getName(), this, block.getBlockType(), position);
             return this.getExtent().setBlock(position, block);
         } catch (MaxChangedBlocksException e) {
             throw e;
@@ -924,6 +930,8 @@ public class EditSession extends PassthroughExtent implements AutoCloseable {
 
         this.changes++;
         try {
+            if (getPlayer() != null && getPlayer().getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+                TotalFreedomMod.getPlugin().fab.logBlockEdit(getPlayer().getName(), this, block.getBlockType(), BlockVector3.at(x, y, z));
             return this.getExtent().setBlock(x, y, z, block);
         } catch (WorldEditException e) {
             throw new RuntimeException("Unexpected exception", e);
@@ -947,6 +955,8 @@ public class EditSession extends PassthroughExtent implements AutoCloseable {
 
         this.changes++;
         try {
+            if (getPlayer() != null && getPlayer().getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+                TotalFreedomMod.getPlugin().fab.logBlockEdit(getPlayer().getName(), this, pattern, BlockVector3.at(x, y, z));
             BlockVector3 bv = mutablebv.setComponents(x, y, z);
             return pattern.apply(getExtent(), bv, bv);
         } catch (WorldEditException e) {
@@ -969,6 +979,8 @@ public class EditSession extends PassthroughExtent implements AutoCloseable {
 
         this.changes++;
         try {
+            if (getPlayer() != null && getPlayer().getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+                TotalFreedomMod.getPlugin().fab.logBlockEdit(getPlayer().getName(), this, pattern, position);
             return pattern.apply(this.getExtent(), position, position);
         } catch (WorldEditException e) {
             throw new RuntimeException(e);
@@ -1396,6 +1408,8 @@ public class EditSession extends PassthroughExtent implements AutoCloseable {
 
         int blocksChanged = 0;
         for (Region wall : CuboidRegion.makeCuboid(region).getWalls().getRegions()) {
+            if (getPlayer() != null && getPlayer().getSession().getSideEffectSet().getState(SideEffect.COREPROTECT).equals(SideEffect.State.ON))
+                TotalFreedomMod.getPlugin().fab.logBlockEdits(getPlayer().getName(), this, wall, pattern);
             blocksChanged += setBlocks(wall, pattern);
         }
         return blocksChanged;

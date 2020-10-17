@@ -14,6 +14,8 @@ repositories {
     maven { url = uri("https://maven.enginehub.org/repo/") }
     maven { url = uri("https://ci.emc.gs/nexus/content/groups/aikar/") }
     maven { url = uri("https://ci.athion.net/plugin/repository/tools/") }
+    maven { url = uri("https://telesphoreo.me/repo/maven/") }
+
     maven {
         this.name = "JitPack"
         this.url = uri("https://jitpack.io")
@@ -70,6 +72,7 @@ dependencies {
     "implementation"("com.palmergames.bukkit:towny:0.84.0.9") { isTransitive = false }
     "implementation"("com.thevoxelbox.voxelsniper:voxelsniper:5.171.0") { isTransitive = false }
     "implementation"("com.comphenix.protocol:ProtocolLib:4.5.0") { isTransitive = false }
+    "implementation"("me.totalfreedom:TotalFreedomMod:2020.11") { isTransitive = false }
 }
 
 tasks.named<Copy>("processResources") {
@@ -100,6 +103,7 @@ tasks.named<ShadowJar>("shadowJar") {
         include(dependency("org.slf4j:slf4j-api"))
         include(dependency("org.apache.logging.log4j:log4j-slf4j-impl"))
         include(dependency("org.antlr:antlr4-runtime"))
+        include(dependency("me.totalfreedom:TotalFreedomMod"))
         relocate("org.bstats", "com.sk89q.worldedit.bukkit.bstats") {
             include(dependency("org.bstats:bstats-bukkit:1.7"))
         }
